@@ -1,0 +1,28 @@
+#!/bin/bash
+#
+# startServer
+#
+# (c) 2014 Sam Caldwell.  Public Domain.
+#
+# This script connects the jenkins server
+# and ensures the master can connect via 
+# ssh.
+#
+exec_as_jenkins(){
+    echo "Running as user Jenkins: $CMD"
+    su -l jenkins -c "$CMD"
+}
+
+echo "Verifying environment...."
+[ -z "$JENKINS_MASTER_HOST" ] && {
+    echo "JENKINS_MASTER_HOST not set."
+    exit 1
+}
+echo "Verified JENKINS_MASTER_HOST is set [$JENKINS_MASTER_HOST]."
+
+echo "Call Jenkins Master for the server's public SSH key."
+CMD="wget http://$JENKINS_MASTER_HOST/publicKeys -O /home/jenkins/.ssh/authorized_keys"
+exec_as_jenkins $CMD
+
+/etc/init.d/ssh restart
+exit 0

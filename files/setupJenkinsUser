@@ -1,0 +1,16 @@
+#!/bin/bash
+#
+# setupUserConnection
+# (c) 2014 Sam Caldwell.  Public Domain.
+#
+# This script sets up the jenkins user and SSH connection
+# from a remote machine (e.g. Jenkins Master).
+#
+
+useradd -m -r jenkins
+
+echo "Create SSH local SSH keys"
+CMD="cat /dev/zero | ssh-keygen -t rsa -b 2048 -q -N ''"
+exec_as_jenkins $CMD
+
+
